@@ -10,11 +10,13 @@ const INITIAL_ROUTE_NAME = 'PaoDiario';
 
 export default function BottomTabNavigator({ navigation, route }) {
 
-  navigation.setOptions({ headerTitle: getHeaderTitle(route) });
+  navigation.setOptions({ headerShown: false, });
 
   return (
-    <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
+    <BottomTab.Navigator
+      initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
+        // screenOptions={{ headerShown: false }}
         name="PaoDiario"
         component={PaoDiario}
         options={{
