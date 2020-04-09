@@ -6,7 +6,8 @@ import {
 	Text, TouchableOpacity, FlatList,
 	View, Alert
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient'
+import { useFonts } from '@use-expo/font'
+import { AppLoading } from 'expo'
 import Constants from 'expo-constants'
 import { FontAwesome } from '@expo/vector-icons'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -27,8 +28,16 @@ export default function PaoDiario() {
 
 	const navigation = useNavigation()
 
+	let [fontsLoaded] = useFonts({
+		// "AveriaSansLibre-Bold": require('../assets/fonts/AveriaSansLibre-Bold.ttf'),
+		// "AveriaSansLibre-BoldItalic": require('../assets/fonts/AveriaSansLibre-BoldItalic.ttf'),
+		// "AveriaSansLibre-Italic": require('../assets/fonts/AveriaSansLibre-Italic.ttf'),
+		"AveriaSansLibre-Light": require('../assets/fonts/AveriaSansLibre-Light.ttf'),
+		// "AveriaSansLibre": require('../assets/fonts/AveriaSansLibre-Regular.ttf'),
+	})
+
 	function sendWhatsApp() {
-		Linking.openURL(`whatsapp://send?text=${mensagem}`)
+		Linking.openURL(`whatsapp://send?text=${mensagem.text}`)
 	}
 	function sendFacebook() {
 		// fazer if caso n esteja logado no fb
@@ -39,56 +48,67 @@ export default function PaoDiario() {
 	function getRandomVerse() {
 		// setRandom(random + Math.random(1, 20))
 		axios.get('https://bibleapi.co/api/verses/nvi/random', token)
-			.then(respone => setMensagem(respone.data))
+			.then(respone => setMensagem(respone.data),
+			)
 			// .then(response => setBook(response.data))
 			.catch(
 				() => { Alert.alert('Erro ao recupar API') }
 			)
+		console.log(mensagem)
 	}
 
-	return (
-		<View
-			style={styles.container}
-		>
+	if (!fontsLoaded) {
+		return <AppLoading />
+	} else {
+		return (
 
-			<ScrollView   >
-				<View>
-					<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+			<View style={styles.container}			>
+
+				<ScrollView   >
 					<View>
-						{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
-						<Text style={{ textAlign: "center", fontSize: 20, marginVertical: 10 }}>"{mensagem.text}"</Text>
-					</View>
+						<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+						<View>
+							{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
+							<Text style={styles.msmText}>"{mensagem.text}"</Text>
+							{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
+						</View>
 
-					<TouchableOpacity
-						style={styles.socialButtonSearch}
-						onPress={getRandomVerse} >
-						<Text>Receba sua mensagem</Text>
-					</TouchableOpacity>
-				</View>
-
-				<View>
-					<Text style={{ fontSize: 20, alignSelf: "center" }}>Compartilhe esta mensagem de fé</Text>
-
-					<View style={styles.containerShare}>
 						<TouchableOpacity
-							onPress={sendFacebook}
-							style={styles.socialButtonFB} >
-							<FontAwesome name="facebook" color="#FFF" size={30} />
-							{/* <Text>Facebook - n funciona ainda </Text> */}
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={sendWhatsApp}
-							style={styles.socialButtonWA} >
-							<FontAwesome name="whatsapp" color="#FFF" size={30} />
-							{/* <Text>WhatsApp</Text> */}
+							style={styles.socialButtonSearch}
+							onPress={getRandomVerse} >
+							<Text style={{
+								fontSize: 20,
+							}}>Receba sua mensagem</Text>
 						</TouchableOpacity>
 					</View>
-				</View>
 
-			</ScrollView>
+					<View style={styles.share}>
+						<Text style={{
+							fontSize: 20,
+							alignSelf: "center",
+						}}>Compartilhe esta mensagem de fé</Text>
 
-		</View >
-	);
+						<View style={styles.containerShare}>
+							<TouchableOpacity
+								onPress={sendFacebook}
+								style={styles.socialButtonFB} >
+								<FontAwesome name="facebook" color="#FFF" size={30} />
+								{/* <Text>Facebook - n funciona ainda </Text> */}
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={sendWhatsApp}
+								style={styles.socialButtonWA} >
+								<FontAwesome name="whatsapp" color="#FFF" size={30} />
+							</TouchableOpacity>
+						</View>
+					</View>
+
+				</ScrollView>
+
+			</View >
+		);
+
+	}
 }
 
 PaoDiario.navigationOptions = {
@@ -117,11 +137,13 @@ const styles = StyleSheet.create({
 		height: 200,
 	},
 	socialButtonSearch: {
+		alignSelf: "center",
 		justifyContent: "center",
 		alignItems: "center",
-		width: width,
-		height: 40,
-		backgroundColor: "#06d4c4"
+		width: width - 70,
+		height: 60,
+		backgroundColor: "#33A5FF",
+		borderRadius: 10,
 	},
 	socialButtonFB: {
 		justifyContent: "center",
@@ -131,6 +153,12 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10,
 		height: 70,
 		width: 70,
+		// shadowColor: 'rgba(46, 229, 157, 0.9)',
+		// shadowOpacity: 1,
+		// elevation: 10,
+		// shadowRadius: 5,
+		// shadowOffset: { width: 1, height: 10 },
+		// color: '#FFFFFF'
 	},
 	socialButtonWA: {
 		marginHorizontal: 10,
@@ -140,80 +168,25 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		height: 70,
 		width: 70,
+		// shadowColor: 'rgba(46, 229, 157, 0.9)',
+		// shadowOpacity: 1,
+		// elevation: 10,
+		// shadowRadius: 5,
+		// shadowOffset: { width: 1, height: 10 },
+		// color: '#FFFFFF'
+	},
+	msmText: {
+		textAlign: "center",
+		fontSize: 20,
+		marginVertical: 30,
+	},
+	msmAuthor: {
+		textAlign: "center",
+		fontSize: 20,
+		marginBottom: 30,
+	},
+	share: {
+		marginVertical: 30,
 	},
 
-
-
-
-	welcomeContainer: {
-		alignItems: 'center',
-		marginTop: 10,
-		marginBottom: 20,
-	},
-	welcomeImage: {
-		width: 100,
-		height: 80,
-		resizeMode: 'contain',
-		marginTop: 3,
-		marginLeft: -10,
-	},
-	getStartedContainer: {
-		alignItems: 'center',
-		marginHorizontal: 50,
-	},
-	PaoDiarioFilename: {
-		marginVertical: 7,
-	},
-	codeHighlightText: {
-		color: 'rgba(96,100,109, 0.8)',
-	},
-	codeHighlightContainer: {
-		backgroundColor: 'rgba(0,0,0,0.05)',
-		borderRadius: 3,
-	},
-	getStartedText: {
-		fontSize: 17,
-		color: 'rgba(96,100,109, 1)',
-		lineHeight: 24,
-		textAlign: 'center',
-	},
-	tabBarInfoContainer: {
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		right: 0,
-		...Platform.select({
-			ios: {
-				shadowColor: 'black',
-				shadowOffset: { width: 0, height: -3 },
-				shadowOpacity: 0.1,
-				shadowRadius: 3,
-			},
-			android: {
-				elevation: 20,
-			},
-		}),
-		alignItems: 'center',
-		backgroundColor: '#fbfbfb',
-		paddingVertical: 20,
-	},
-	tabBarInfoText: {
-		fontSize: 17,
-		color: 'rgba(96,100,109, 1)',
-		textAlign: 'center',
-	},
-	navigationFilename: {
-		marginTop: 5,
-	},
-	helpContainer: {
-		marginTop: 15,
-		alignItems: 'center',
-	},
-	helpLink: {
-		paddingVertical: 15,
-	},
-	helpLinkText: {
-		fontSize: 14,
-		color: '#2e78b7',
-	},
 });
