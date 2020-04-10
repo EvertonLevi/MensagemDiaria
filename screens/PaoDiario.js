@@ -21,12 +21,29 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik1vbiBBcHIgMDYgMjAy
 export default function PaoDiario() {
 
 	const [mensagem, setMensagem] = useState([])
-	const [book, setBook] = useState('')
-	const [dados, setDados] = useState([])
-	const [random, setRandom] = useState(Number)
-	const [loading, setLoading] = useState(false)
 
-	const navigation = useNavigation()
+	useEffect(() => {
+		axios.get('https://bibleapi.co/api/verses/nvi/random', token)
+			.then(respone => {
+				setMensagem(respone.data),
+					console.log(mensagem)
+			}
+			)
+			.catch(
+				() => { Alert.alert('Erro no useEffect') }
+			)
+	}, [])
+
+
+	function getRandomVerse() {
+		// setRandom(random + Math.random(1, 20))
+		axios.get('https://bibleapi.co/api/verses/nvi/random', token)
+			.then(respone => setMensagem(respone.data),
+				console.log(mensagem))
+			.catch(
+				() => { Alert.alert('Erro ao recupar API') }
+			)
+	}
 
 	let [fontsLoaded] = useFonts({
 		// "AveriaSansLibre-Bold": require('../assets/fonts/AveriaSansLibre-Bold.ttf'),
@@ -45,68 +62,101 @@ export default function PaoDiario() {
 		// Linking.openURL(`facebook://send?text=${mensagem}`)
 	}
 
-	function getRandomVerse() {
-		// setRandom(random + Math.random(1, 20))
-		axios.get('https://bibleapi.co/api/verses/nvi/random', token)
-			.then(respone => setMensagem(respone.data),
-			)
-			// .then(response => setBook(response.data))
-			.catch(
-				() => { Alert.alert('Erro ao recupar API') }
-			)
-		console.log(mensagem)
-	}
 
 	if (!fontsLoaded) {
 		return <AppLoading />
 	} else {
-		return (
-
-			<View style={styles.container}			>
-
-				<ScrollView   >
-					<View>
-						<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+		if (mensagem <= 0) {
+			return (
+				<View style={styles.container}			>
+					<ScrollView   >
 						<View>
-							{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
-							<Text style={styles.msmText}>"{mensagem.text}"</Text>
-							{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
+							<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+							<View>
+								{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
+								<Text style={styles.msmLoading}>Carregando sua mensagem...</Text>
+								{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
+							</View>
+							<TouchableOpacity
+								style={styles.socialButtonSearch}
+								onPress={getRandomVerse} >
+								<Text style={{
+									fontSize: 20,
+								}}>Receba sua mensagem</Text>
+							</TouchableOpacity>
 						</View>
 
-						<TouchableOpacity
-							style={styles.socialButtonSearch}
-							onPress={getRandomVerse} >
+						<View style={styles.share}>
 							<Text style={{
 								fontSize: 20,
-							}}>Receba sua mensagem</Text>
-						</TouchableOpacity>
-					</View>
+								alignSelf: "center",
+							}}>Compartilhe esta mensagem de fé</Text>
 
-					<View style={styles.share}>
-						<Text style={{
-							fontSize: 20,
-							alignSelf: "center",
-						}}>Compartilhe esta mensagem de fé</Text>
+							<View style={styles.containerShare}>
+								<TouchableOpacity
+									onPress={sendFacebook}
+									style={styles.socialButtonFB} >
+									<FontAwesome name="facebook" color="#FFF" size={30} />
+									{/* <Text>Facebook - n funciona ainda </Text> */}
+								</TouchableOpacity>
+								<TouchableOpacity
+									onPress={sendWhatsApp}
+									style={styles.socialButtonWA} >
+									<FontAwesome name="whatsapp" color="#FFF" size={30} />
+								</TouchableOpacity>
+							</View>
+						</View>
 
-						<View style={styles.containerShare}>
+					</ScrollView>
+
+				</View >
+			);
+		} else {
+			return (
+				<View style={styles.container}			>
+					<ScrollView   >
+						<View>
+							<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+							<View>
+								<Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text>
+								<Text style={styles.msmText}>"{mensagem.text}"</Text>
+								<Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text>
+							</View>
 							<TouchableOpacity
-								onPress={sendFacebook}
-								style={styles.socialButtonFB} >
-								<FontAwesome name="facebook" color="#FFF" size={30} />
-								{/* <Text>Facebook - n funciona ainda </Text> */}
-							</TouchableOpacity>
-							<TouchableOpacity
-								onPress={sendWhatsApp}
-								style={styles.socialButtonWA} >
-								<FontAwesome name="whatsapp" color="#FFF" size={30} />
+								style={styles.socialButtonSearch}
+								onPress={getRandomVerse} >
+								<Text style={{
+									fontSize: 20,
+								}}>Receba sua mensagem</Text>
 							</TouchableOpacity>
 						</View>
-					</View>
 
-				</ScrollView>
+						<View style={styles.share}>
+							<Text style={{
+								fontSize: 20,
+								alignSelf: "center",
+							}}>Compartilhe esta mensagem de fé</Text>
 
-			</View >
-		);
+							<View style={styles.containerShare}>
+								<TouchableOpacity
+									onPress={sendFacebook}
+									style={styles.socialButtonFB} >
+									<FontAwesome name="facebook" color="#FFF" size={30} />
+									{/* <Text>Facebook - n funciona ainda </Text> */}
+								</TouchableOpacity>
+								<TouchableOpacity
+									onPress={sendWhatsApp}
+									style={styles.socialButtonWA} >
+									<FontAwesome name="whatsapp" color="#FFF" size={30} />
+								</TouchableOpacity>
+							</View>
+						</View>
+
+					</ScrollView>
+
+				</View >
+			);
+		}
 
 	}
 }
@@ -174,6 +224,12 @@ const styles = StyleSheet.create({
 		// shadowRadius: 5,
 		// shadowOffset: { width: 1, height: 10 },
 		// color: '#FFFFFF'
+	},
+	msmLoading: {
+		textAlign: "center",
+		fontWeight: "bold",
+		fontSize: 40,
+		marginVertical: 30,
 	},
 	msmText: {
 		textAlign: "center",
