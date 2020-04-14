@@ -8,12 +8,14 @@ import {
 } from 'react-native';
 import { useFonts } from '@use-expo/font'
 import {
-	AppLoading,
+	AppLoading
+} from 'expo'
+import {
+	AdMobBanner,
+	AdMobInterstitial,
 	AdMobRewarded,
 	PublisherBanner,
-	AdMobInterstitial,
-	AdMobBanner,
-} from 'expo'
+} from 'expo-ads-admob'
 import Constants from 'expo-constants'
 import { FontAwesome } from '@expo/vector-icons'
 import { ScrollView } from 'react-native-gesture-handler';
@@ -43,7 +45,7 @@ export default function PaoDiario() {
 	}, [])
 
 	function bannerError() {
-		console.log("An error");
+		console.log("Um erro no AdMobBanner");
 		return;
 	}
 
@@ -75,111 +77,107 @@ export default function PaoDiario() {
 	}
 
 
-	if (!fontsLoaded) {
-		return <AppLoading />
+	if (mensagem <= 0) {
+		return (
+			<View style={styles.container}			>
+				<ScrollView   >
+					<View>
+						<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
+						<View>
+							{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
+							<Text style={styles.msmLoading}>Carregando sua mensagem...</Text>
+							{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
+						</View>
+						<TouchableOpacity
+							style={styles.socialButtonSearch}
+							onPress={getRandomVerse} >
+							<Text style={{
+								fontSize: 20,
+							}}>Receba sua mensagem</Text>
+						</TouchableOpacity>
+					</View>
+
+					<View style={styles.share}>
+						<Text style={{
+							fontSize: 20,
+							alignSelf: "center",
+						}}>Compartilhe esta mensagem de fé</Text>
+
+						<View style={styles.containerShare}>
+							<TouchableOpacity
+								onPress={sendFacebook}
+								style={styles.socialButtonFB} >
+								<FontAwesome name="facebook" color="#FFF" size={30} />
+								{/* <Text>Facebook - n funciona ainda </Text> */}
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={sendWhatsApp}
+								style={styles.socialButtonWA} >
+								<FontAwesome name="whatsapp" color="#FFF" size={30} />
+							</TouchableOpacity>
+						</View>
+					</View>
+
+				</ScrollView>
+
+			</View >
+		);
 	} else {
-		if (mensagem <= 0) {
-			return (
-				<View style={styles.container}			>
-					<ScrollView   >
+		return (
+			<View style={styles.container}			>
+				<ScrollView   >
+					<View>
+						<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
 						<View>
-							<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
-							<View>
-								{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
-								<Text style={styles.msmLoading}>Carregando sua mensagem...</Text>
-								{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
-							</View>
+							<Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text>
+							<Text style={styles.msmText}>"{mensagem.text}"</Text>
+							<Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text>
+						</View>
+						<TouchableOpacity
+							style={styles.socialButtonSearch}
+							onPress={getRandomVerse} >
+							<Text style={{
+								fontSize: 20,
+							}}>Receba sua mensagem</Text>
+						</TouchableOpacity>
+					</View>
+
+					<View style={styles.share}>
+						<Text style={{
+							fontSize: 20,
+							alignSelf: "center",
+						}}>Compartilhe esta mensagem de fé</Text>
+
+						<View style={styles.containerShare}>
 							<TouchableOpacity
-								style={styles.socialButtonSearch}
-								onPress={getRandomVerse} >
-								<Text style={{
-									fontSize: 20,
-								}}>Receba sua mensagem</Text>
+								onPress={sendFacebook}
+								style={styles.socialButtonFB} >
+								<FontAwesome name="facebook" color="#FFF" size={30} />
+								{/* <Text>Facebook - n funciona ainda </Text> */}
+							</TouchableOpacity>
+							<TouchableOpacity
+								onPress={sendWhatsApp}
+								style={styles.socialButtonWA} >
+								<FontAwesome name="whatsapp" color="#FFF" size={30} />
 							</TouchableOpacity>
 						</View>
 
-						<View style={styles.share}>
-							<Text style={{
-								fontSize: 20,
-								alignSelf: "center",
-							}}>Compartilhe esta mensagem de fé</Text>
+					</View>
 
-							<View style={styles.containerShare}>
-								<TouchableOpacity
-									onPress={sendFacebook}
-									style={styles.socialButtonFB} >
-									<FontAwesome name="facebook" color="#FFF" size={30} />
-									{/* <Text>Facebook - n funciona ainda </Text> */}
-								</TouchableOpacity>
-								<TouchableOpacity
-									onPress={sendWhatsApp}
-									style={styles.socialButtonWA} >
-									<FontAwesome name="whatsapp" color="#FFF" size={30} />
-								</TouchableOpacity>
-							</View>
-						</View>
-
-					</ScrollView>
-
-				</View >
-			);
-		} else {
-			return (
-				<View style={styles.container}			>
-					<ScrollView   >
-						<View>
-							<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
-							<View>
-								<Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text>
-								<Text style={styles.msmText}>"{mensagem.text}"</Text>
-								<Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text>
-							</View>
-							<TouchableOpacity
-								style={styles.socialButtonSearch}
-								onPress={getRandomVerse} >
-								<Text style={{
-									fontSize: 20,
-								}}>Receba sua mensagem</Text>
-							</TouchableOpacity>
-						</View>
-
-						<View style={styles.share}>
-							<Text style={{
-								fontSize: 20,
-								alignSelf: "center",
-							}}>Compartilhe esta mensagem de fé</Text>
-
-							<View style={styles.containerShare}>
-								<TouchableOpacity
-									onPress={sendFacebook}
-									style={styles.socialButtonFB} >
-									<FontAwesome name="facebook" color="#FFF" size={30} />
-									{/* <Text>Facebook - n funciona ainda </Text> */}
-								</TouchableOpacity>
-								<TouchableOpacity
-									onPress={sendWhatsApp}
-									style={styles.socialButtonWA} >
-									<FontAwesome name="whatsapp" color="#FFF" size={30} />
-								</TouchableOpacity>
-							</View>
-
-						</View>
-
-						<View style={styles.pub}>
-							<AdMobBanner
-								style={styles.bottomBanner}
-								bannerSize="fullBanner"
-								adUnitID="ca-app-pub-5712434644511420/8005424160"
-								testDeviceID="EMULATOR"
-								didFailToReceiveAdWithError={bannerError}
-							/>
-						</View>
-					</ScrollView>
-
-				</View >
-			);
-		}
-
+					<View style={
+						styles.pub
+					}>
+						<AdMobBanner
+							style={styles.pub}
+							bannerSize="fullBanner"
+							adUnitID="ca-app-pub-5712434644511420/8005424160"
+							onDidFailToReceiveAdWithError={bannerError}
+						/>
+					</View>
+					{/*"ca-app-pub-5712434644511420/8005424160" */}
+				</ScrollView>
+			</View >
+		);
 	}
 }
 
@@ -195,12 +193,12 @@ const styles = StyleSheet.create({
 		paddingTop: Constants.statusBarHeight + 20
 	},
 	bottomBanner: {
-		// position: "absolute",
-		// bottom: 0
+		position: "absolute",
+		bottom: 0
 	},
 	pub: {
-		flex: 1,
-		backgroundColor: "#000",
+		// flex: 1,
+		// backgroundColor: "#000",
 		alignItems: "center",
 		justifyContent: "center"
 	},

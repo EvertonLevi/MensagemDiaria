@@ -8,7 +8,7 @@ import {
   View, Alert
 } from 'react-native';
 import Constants from 'expo-constants'
-import { FontAwesome } from '@expo/vector-icons'
+import {FontAwesome} from '@expo/vector-icons'
 
 import brand from '../assets/images/icon.png'
 
