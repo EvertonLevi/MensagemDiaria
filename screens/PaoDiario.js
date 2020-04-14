@@ -7,12 +7,20 @@ import {
 	View, Alert
 } from 'react-native';
 import { useFonts } from '@use-expo/font'
-import { AppLoading } from 'expo'
+import {
+	AppLoading,
+	AdMobRewarded,
+	PublisherBanner,
+	AdMobInterstitial,
+	AdMobBanner,
+} from 'expo'
 import Constants from 'expo-constants'
 import { FontAwesome } from '@expo/vector-icons'
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios'
 import brand from '../assets/images/icon.png'
+
+// ca-app-pub-5712434644511420~2473895883
 
 const { width, height } = Dimensions.get('window')
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik1vbiBBcHIgMDYgMjAyMCAxOTowOTo0NCBHTVQrMDAwMC5ldmVydG9uLmxldmlAaG90bWFpbC5jb20iLCJpYXQiOjE1ODYyMDAxODR9.cz4Xc0gjq8gyIZJK998ZW7JJz3rad6s9GZSnO7umjWE"
@@ -34,6 +42,10 @@ export default function PaoDiario() {
 			)
 	}, [])
 
+	function bannerError() {
+		console.log("An error");
+		return;
+	}
 
 	function getRandomVerse() {
 		// setRandom(random + Math.random(1, 20))
@@ -45,13 +57,13 @@ export default function PaoDiario() {
 			)
 	}
 
-	let [fontsLoaded] = useFonts({
-		// "AveriaSansLibre-Bold": require('../assets/fonts/AveriaSansLibre-Bold.ttf'),
-		// "AveriaSansLibre-BoldItalic": require('../assets/fonts/AveriaSansLibre-BoldItalic.ttf'),
-		// "AveriaSansLibre-Italic": require('../assets/fonts/AveriaSansLibre-Italic.ttf'),
-		"AveriaSansLibre-Light": require('../assets/fonts/AveriaSansLibre-Light.ttf'),
-		// "AveriaSansLibre": require('../assets/fonts/AveriaSansLibre-Regular.ttf'),
-	})
+	// let [fontsLoaded] = useFonts({
+	// 	// "AveriaSansLibre-Bold": require('../assets/fonts/AveriaSansLibre-Bold.ttf'),
+	// 	// "AveriaSansLibre-BoldItalic": require('../assets/fonts/AveriaSansLibre-BoldItalic.ttf'),
+	// 	// "AveriaSansLibre-Italic": require('../assets/fonts/AveriaSansLibre-Italic.ttf'),
+	// 	"AveriaSansLibre-Light": require('../assets/fonts/AveriaSansLibre-Light.ttf'),
+	// 	// "AveriaSansLibre": require('../assets/fonts/AveriaSansLibre-Regular.ttf'),
+	// })
 
 	function sendWhatsApp() {
 		Linking.openURL(`whatsapp://send?text=${mensagem.text}`)
@@ -150,8 +162,18 @@ export default function PaoDiario() {
 									<FontAwesome name="whatsapp" color="#FFF" size={30} />
 								</TouchableOpacity>
 							</View>
+
 						</View>
 
+						<View style={styles.pub}>
+							<AdMobBanner
+								style={styles.bottomBanner}
+								bannerSize="fullBanner"
+								adUnitID="ca-app-pub-5712434644511420/8005424160"
+								testDeviceID="EMULATOR"
+								didFailToReceiveAdWithError={bannerError}
+							/>
+						</View>
 					</ScrollView>
 
 				</View >
@@ -171,6 +193,16 @@ const styles = StyleSheet.create({
 		backgroundColor: '#A7D3FC',
 		paddingHorizontal: 10,
 		paddingTop: Constants.statusBarHeight + 20
+	},
+	bottomBanner: {
+		// position: "absolute",
+		// bottom: 0
+	},
+	pub: {
+		flex: 1,
+		backgroundColor: "#000",
+		alignItems: "center",
+		justifyContent: "center"
 	},
 	contentContainer: {
 		paddingTop: 20,
