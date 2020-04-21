@@ -6,7 +6,7 @@ import {
 	Text, TouchableOpacity, FlatList,
 	View, Alert
 } from 'react-native';
-import { useFonts } from '@use-expo/font'
+import LottieView from 'lottie-react-native'
 import {
 	AppLoading
 } from 'expo'
@@ -80,13 +80,21 @@ export default function PaoDiario() {
 	if (mensagem <= 0) {
 		return (
 			<View style={styles.container}			>
-				<ScrollView   >
+				<ScrollView>
 					<View>
 						<Image source={brand} style={{ alignSelf: "center", width: 100, height: 100 }} />
 						<View>
-							{/* <Text style={{ fontSize: 20, fontWeight: "bold", marginVertical: 10 }}>Livro: {mensagem.book.name}</Text> */}
-							<Text style={styles.msmLoading}>Carregando sua mensagem...</Text>
-							{/* <Text style={styles.msmAuthor}>{mensagem.book.author} - {mensagem.chapter} - {mensagem.number}</Text> */}
+							<LottieView
+								style={{
+									marginVertical: 20,
+									width: 200,
+									height: 200,
+									alignSelf: "center"
+								}}
+								source={require('../assets/loading.json')}
+								autoPlay loop
+							/>
+							{/* <Text style={styles.msmLoading}>Carregando sua mensagem...</Text> */}
 						</View>
 						<TouchableOpacity
 							style={styles.socialButtonSearch}
@@ -167,15 +175,15 @@ export default function PaoDiario() {
 					<View style={
 						styles.pub
 					}>
-						<AdMobBanner
-							style={styles.pub}
-							bannerSize="fullBanner"
-							adUnitID="ca-app-pub-5712434644511420/8005424160"
-							onDidFailToReceiveAdWithError={bannerError}
-						/>
 					</View>
-					{/*"ca-app-pub-5712434644511420/8005424160" */}
 				</ScrollView>
+				<AdMobBanner
+					style={styles.pub}
+					bannerSize="fullBanner"
+					adUnitID="ca-app-pub-5712434644511420/8005424160"
+					onDidFailToReceiveAdWithError={bannerError}
+				/>
+				{/*"ca-app-pub-5712434644511420/8005424160" */}
 			</View >
 		);
 	}
